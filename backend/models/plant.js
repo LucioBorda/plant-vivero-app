@@ -1,7 +1,11 @@
-// Modelo temporal (simula una base de datos)
-let plants = [
-  { id: 1, name: "Aloe Vera", stock: 10, price: 1200 },
-  { id: 2, name: "Cactus", stock: 5, price: 800 }
-];
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db");
 
-module.exports = plants;
+const Plant = sequelize.define("Plant", {
+  name: { type: DataTypes.STRING, allowNull: false },
+  price: { type: DataTypes.FLOAT, allowNull: false },
+  stock: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+  description: { type: DataTypes.TEXT },
+});
+
+module.exports = Plant;
