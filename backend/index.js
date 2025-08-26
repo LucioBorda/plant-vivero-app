@@ -1,27 +1,28 @@
-// Importamos las dependencias necesarias
-const express = require('express');   // Framework para el servidor
-const cors = require('cors');         // Permite peticiones desde el frontend
-require('dotenv').config();           // Carga las variables de entorno
+// app.js
+const express = require("express");
+const sequelize = require("./db");
 
-// Creamos la app
 const app = express();
-const plantRoutes = require("./routes/plantsRoute");
-// Middleware (cosas que se ejecutan antes de llegar a las rutas)
-app.use(cors());            // Permite que el frontend (React) acceda
-app.use(express.json());    // Para que el servidor entienda JSON
+const PORT = 5000;
 
-// Montamos rutas
-app.use("/plants", plantRoutes);
+// Middleware para JSON
+app.use(express.json());
 
-// Puerto (viene de variables de entorno, con fallback 3000)
-const PORT = process.env.PORT || 5000;
-
-// Ruta inicial (ejemplo de prueba)
-app.get('/', (req, res) => {
-  res.send('Backend funcionando 🚀');
+// Ruta de prueba
+app.get("/", (req, res) => {
+  res.send("Servidor funcionando 🚀");
 });
 
-// Levantamos el servidor
+// Probar conexión con la base
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Conectado a la base de datos PostgreSQL");
+  } catch (error) {
+    console.error("❌ Error de conexión:", error);
+  }
+})();
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
