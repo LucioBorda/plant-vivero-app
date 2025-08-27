@@ -6,9 +6,10 @@ module.exports = {
   createPlant: async (req, res) => {
     try {
       const { name, price, stock, description, categoryIds } = req.body;
+      const image = req.file?.path; // Multer + Cloudinary devuelve la URL
 
       // Crear la planta
-      const plant = await Plant.create({ name, price, stock, description });
+      const plant = await Plant.create({ name, price, stock, description, image });
 
       // Asociar categorías si se envían
       if (categoryIds && categoryIds.length > 0) {
@@ -39,17 +40,37 @@ module.exports = {
     }
   },
 
+  // Obtener planta por ID
+  getPlantById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const plant = await Plant.findByPk(id, {
+        include: {
+          model: Category,
+          attributes: ["id", "name"]
+        }
+      });
+
+      if (!plant) return res.status(404).json({ message: "Planta no encontrada" });
+
+      res.json(plant);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
   // Actualizar planta
   updatePlant: async (req, res) => {
     try {
       const { id } = req.params;
       const { name, price, stock, description, categoryIds } = req.body;
+      const image = req.file?.path; // Nueva imagen si se sube
 
       const plant = await Plant.findByPk(id);
       if (!plant) return res.status(404).json({ error: "Planta no encontrada" });
 
       // Actualizar campos
-      await plant.update({ name, price, stock, description });
+      await plant.update({ name, price, stock, description, ...(image && { image }) });
 
       // Actualizar categorías
       if (categoryIds) {
@@ -77,24 +98,4 @@ module.exports = {
       res.status(500).json({ error: error.message });
     }
   },
-
-    // GET /plants/:id
-  getPlantById: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const plant = await Plant.findByPk(id, {
-        include: {
-          model: Category,
-          attributes: ["id", "name"]
-        }
-      });
-
-      if (!plant) return res.status(404).json({ message: "Planta no encontrada" });
-
-      res.json(plant);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
 };
-
