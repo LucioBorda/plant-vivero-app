@@ -1,36 +1,34 @@
-import { useEffect, useState } from "react";
-import { getAllPlants, deletePlant } from "../api/plantsApi";
+import React, { useEffect, useState } from "react";
+import PlantCard from "../components/PlantCard";
+import { getAllPlants } from "../api/plantsApi";
+import "./PlantList.css";
 
-function PlantList() {
+const PlantList = () => {
   const [plants, setPlants] = useState([]);
 
   useEffect(() => {
-    loadPlants();
+    const fetchPlants = async () => {
+      try {
+        const data = await getAllPlants();
+        setPlants(data);
+      } catch (error) {
+        console.error("Error fetching plants:", error);
+      }
+    };
+
+    fetchPlants();
   }, []);
-
-  const loadPlants = async () => {
-    const data = await getAllPlants();
-    setPlants(data);
-  };
-
-  const handleDelete = async (id) => {
-    await deletePlant(id);
-    loadPlants(); // recarga la lista
-  };
 
   return (
     <div>
-      <h1>Plant List</h1>
-      <ul>
+      <h2>Plant List</h2>
+      <div className="plants-grid">
         {plants.map((plant) => (
-          <li key={plant.id}>
-            {plant.name} - {plant.species}
-            <button onClick={() => handleDelete(plant.id)}>Delete</button>
-          </li>
+          <PlantCard key={plant.id} plant={plant} />
         ))}
-      </ul>
+      </div>
     </div>
   );
-}
+};
 
 export default PlantList;

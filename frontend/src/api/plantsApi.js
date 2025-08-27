@@ -1,5 +1,14 @@
 const API_URL = "/plants";
 
+// Recibimos un FormData con la imagen
+export const createPlant = async (plantData) => {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: plantData, // No ponemos Content-Type, fetch lo maneja para FormData
+  });
+  return res.json();
+};
+
 export const getAllPlants = async () => {
   const res = await fetch(API_URL);
   return res.json();
@@ -10,20 +19,10 @@ export const getPlantById = async (id) => {
   return res.json();
 };
 
-export const createPlant = async (plant) => {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(plant),
-  });
-  return res.json();
-};
-
-export const updatePlant = async (id, plant) => {
+export const updatePlant = async (id, plantData) => {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(plant),
+    body: plantData, // FormData para poder actualizar la imagen
   });
   return res.json();
 };

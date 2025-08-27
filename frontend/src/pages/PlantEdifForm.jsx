@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { getAllCategories } from "../api/categoriesApi";
-import { createPlant } from "../api/plantsApi";
+import { getPlantById, updatePlant } from "../api/plantsApi";
 import "../styles/Form.css";
 
-function PlantForm() {
+function PlantEditForm({ plantId }) {
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     stock: "",
     description: "",
-    categoryIds: []
+    categoryIds: [],
+    image: "" // default
   });
   const [imageFile, setImageFile] = useState(null);
 
@@ -19,8 +20,22 @@ function PlantForm() {
       const data = await getAllCategories();
       setCategories(data || []);
     }
+
+    async function fetchPlant() {
+      const plant = await getPlantById(plantId);
+      setFormData({
+        name: plant.name,
+        price: plant.price,
+        stock: plant.stock,
+        description: plant.description,
+        categoryIds: plant.Categories?.map(c => c.id) || [],
+        image: plant.image || "https://via.placeholder.com/150" // imagen por defecto
+      });
+    }
+
     fetchCategories();
-  }, []);
+    fetchPlant();
+  }, [plantId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,76 +62,35 @@ function PlantForm() {
       data.append("price", formData.price);
       data.append("stock", formData.stock);
       data.append("description", formData.description);
-      data.append("image", imageFile); // imagen
+      if (imageFile) data.append("image", imageFile);
       data.append("categoryIds", JSON.stringify(formData.categoryIds));
 
-      await createPlant(data);
-
-      setFormData({
-        name: "",
-        price: "",
-        stock: "",
-        description: "",
-        categoryIds: []
-      });
-      setImageFile(null);
-      alert("Planta creada con éxito!");
+      await updatePlant(plantId, data);
+      alert("Planta actualizada con éxito!");
     } catch (error) {
       console.error(error);
-      alert("Error al crear la planta");
     }
   };
 
   return (
     <div className="form-container">
-      <h2>Agregar Planta</h2>
+      <h2>Editar Planta</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Nombre"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="price"
-          placeholder="Precio"
-          value={formData.price}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="stock"
-          placeholder="Stock"
-          value={formData.stock}
-          onChange={handleChange}
-          required
-        />
-        <textarea
-          name="description"
-          placeholder="Descripción"
-          value={formData.description}
-          onChange={handleChange}
-        />
-        <select
-          multiple
-          value={formData.categoryIds}
-          onChange={handleCategoryChange}
-        >
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
+        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+        <input type="number" name="price" value={formData.price} onChange={handleChange} required />
+        <input type="number" name="stock" value={formData.stock} onChange={handleChange} required />
+        <textarea name="description" value={formData.description} onChange={handleChange} />
+        <select multiple value={formData.categoryIds} onChange={handleCategoryChange}>
+          {categories.map(c => (
+            <option key={c.id} value={c.id}>{c.name}</option>
           ))}
         </select>
         <input type="file" onChange={handleImageChange} />
-        <button type="submit">Agregar Planta</button>
+        <img src={formData.image} alt="preview" style={{ width: 100, margin: "10px 0" }} />
+        <button type="submit">Actualizar Planta</button>
       </form>
     </div>
   );
 }
 
-export default PlantForm;
+export default PlantEditForm;
