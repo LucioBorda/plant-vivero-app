@@ -1,4 +1,4 @@
-const API_URL = "/plants"; // ajusta tu endpoint
+const API_URL = "/plants";
 
 export const getAllPlants = async () => {
   const res = await fetch(API_URL);

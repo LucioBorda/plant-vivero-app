@@ -1,13 +1,23 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Header from "./components/Header";
 import PlantList from "./pages/PlantList";
 import PlantForm from "./pages/PlantForm";
+import CategoryForm from "./pages/CategoryForm";
 
 function App() {
   return (
-    <div>
-      <h1>Plant CRUD</h1>
-      <PlantForm />
-      <PlantList />
-    </div>
+    <Router>
+      <Header />
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<PlantList />} />
+          <Route path="/plants/new" element={<PlantForm />} />
+          <Route path="/categories/new" element={<CategoryForm />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

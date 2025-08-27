@@ -1,0 +1,24 @@
+.header {
+  background-color: #9CA1D7;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav .btn {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #9CA1D7;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+nav .btn:hover {
+  background-color: #e0e0ff;
+}
