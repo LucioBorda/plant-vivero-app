@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import PlantList from "./pages/PlantList";
 import PlantForm from "./pages/PlantForm";
 import CategoryForm from "./pages/CategoryForm";
+import PlantDetail from "./pages/PlantsDetail";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<PlantList />} />
           <Route path="/plants/new" element={<PlantForm />} />
           <Route path="/categories/new" element={<CategoryForm />} />
+          <Route path="/plants/:id" element={<PlantDetail />} />
         </Routes>
       </div>
     </Router>
