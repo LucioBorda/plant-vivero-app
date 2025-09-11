@@ -185,3 +185,237 @@
     grid-template-columns: 1fr;
   }
 }
+/* ===== ESTILOS PARA EL BUSCADOR ===== */
+
+/* Contenedor del buscador */
+.search-container {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Wrapper del input de búsqueda */
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Input de búsqueda */
+.search-input {
+  width: 100%;
+  padding: 12px 45px 12px 40px;
+  border: 2px solid #e2e8f0;
+  border-radius: 25px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.search-input:focus {
+  border-color: #9CA1D7;
+  box-shadow: 0 0 0 3px rgba(156, 161, 215, 0.1);
+}
+
+.search-input::placeholder {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Icono de búsqueda */
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+/* Botón para limpiar búsqueda */
+.clear-search-btn {
+  position: absolute;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #94a3b8;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.clear-search-btn:hover {
+  background: #64748b;
+  transform: scale(1.1);
+}
+
+/* Información de búsqueda */
+.search-info {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.search-term {
+  font-weight: bold;
+  color: #9CA1D7;
+}
+
+/* Botón limpiar todo */
+.clear-all-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.clear-all-btn:hover {
+  background: #ff5252;
+  transform: translateY(-1px);
+}
+
+/* Sección de filtros */
+.filter-options h4 {
+  color: #9CA1D7;
+  margin: 20px 0 10px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Indicadores de filtros activos en el header */
+.active-filters-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.active-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #9CA1D7 0%, #b8bef0 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(156, 161, 215, 0.3);
+}
+
+.active-filter-tag button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.active-filter-tag button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* Estilos para estado sin resultados */
+.search-suggestions {
+  font-size: 14px;
+  color: #64748b;
+  margin: 15px 0;
+  line-height: 1.6;
+}
+
+.reset-search-btn {
+  background: #9CA1D7;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-top: 15px;
+}
+
+.reset-search-btn:hover {
+  background: #8b93d1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(156, 161, 215, 0.3);
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+  .search-input {
+    padding: 10px 40px 10px 35px;
+    font-size: 13px;
+  }
+  
+  .search-icon {
+    left: 10px;
+    font-size: 14px;
+  }
+  
+  .clear-search-btn {
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+  }
+  
+  .active-filters-display {
+    gap: 6px;
+    margin-top: 10px;
+  }
+  
+  .active-filter-tag {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+  
+  .clear-all-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}
+
+/* Animación para cuando se filtra */
+.plants-grid {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

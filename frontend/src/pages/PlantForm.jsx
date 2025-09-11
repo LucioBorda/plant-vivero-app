@@ -29,7 +29,12 @@ function PlantForm() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleCategoryToggle = (catId) => {
+  const handleCategoryToggle = (catId, e) => {
+    // Prevenir la propagación del evento para evitar conflictos
+    if (e) {
+      e.stopPropagation();
+    }
+    
     const id = Number(catId);
     setFormData(prev => {
       if (prev.categoryIds.includes(id)) {
@@ -46,11 +51,23 @@ function PlantForm() {
     });
   };
 
+  const removeCategory = (catId) => {
+    setFormData(prev => ({
+      ...prev,
+      categoryIds: prev.categoryIds.filter(x => x !== catId)
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (Number(formData.price) <= 0) {
       alert("El precio debe ser mayor a 0");
+      return;
+    }
+
+    if (formData.categoryIds.length === 0) {
+      alert("Debes seleccionar al menos una categoría");
       return;
     }
 
@@ -120,28 +137,59 @@ function PlantForm() {
           onChange={handleChange}
         />
 
-        {/* Categorías centradas */}
+        {/* Sección de categorías mejorada */}
         <div className="categories-container">
+          <h3>Selecciona las categorías</h3>
+          
           <div className="categories">
-            {categories.map((cat) => {
-              const selected = formData.categoryIds.includes(cat.id);
-              return (
-                <label
-                  key={cat.id}
-                  className={selected ? "selected" : ""}
-                  onClick={() => handleCategoryToggle(cat.id)}
-                >
-                  {cat.name}
-                  <input
-                    type="checkbox"
-                    value={cat.id}
-                    checked={selected}
-                    readOnly
-                  />
-                </label>
-              );
-            })}
+            {categories.length > 0 ? (
+              categories.map((cat) => {
+                const selected = formData.categoryIds.includes(cat.id);
+                return (
+                  <label
+                    key={cat.id}
+                    className={selected ? "selected" : ""}
+                  >
+                    <input
+                      type="checkbox"
+                      value={cat.id}
+                      checked={selected}
+                      onChange={(e) => handleCategoryToggle(cat.id, e)}
+                    />
+                    <span>{cat.name}</span>
+                  </label>
+                );
+              })
+            ) : (
+              <div className="no-categories-selected">
+                Cargando categorías...
+              </div>
+            )}
           </div>
+
+          {/* Mostrar categorías seleccionadas */}
+          {formData.categoryIds.length > 0 && (
+            <div className="selected-categories">
+              <h4>Categorías seleccionadas ({formData.categoryIds.length})</h4>
+              <div className="selected-tags">
+                {formData.categoryIds.map(catId => {
+                  const category = categories.find(c => c.id === catId);
+                  return category ? (
+                    <span key={catId} className="category-tag">
+                      {category.name}
+                      <button
+                        type="button"
+                        onClick={() => removeCategory(catId)}
+                        className="remove-tag"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ) : null;
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Botones */}
@@ -154,7 +202,15 @@ function PlantForm() {
             {imageFile ? "Cambiar Imagen" : "Agregar Imagen"}
           </button>
 
-          <button type="submit" className="btn">
+          <button 
+            type="submit" 
+            className="btn"
+            disabled={formData.categoryIds.length === 0}
+            style={{
+              opacity: formData.categoryIds.length === 0 ? 0.6 : 1,
+              cursor: formData.categoryIds.length === 0 ? 'not-allowed' : 'pointer'
+            }}
+          >
             Agregar Planta
           </button>
         </div>

@@ -1,3 +1,4 @@
+/* ===== ESTILOS BASE DEL FORMULARIO ===== */
 .form-container {
   background-color: #fff;
   padding: 30px;
@@ -27,41 +28,6 @@
 
 .form-container textarea {
   resize: none;
-}
-
-/* Contenedor de categorías centrado */
-.categories-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px; /* separación del resto del formulario */
-}
-
-.categories {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.categories label {
-  cursor: pointer;
-  padding: 10px 15px;
-  border-radius: 8px;
-  background-color: #f4f4f4;
-  transition: 0.2s;
-  user-select: none;
-}
-
-.categories label.selected {
-  background-color: #6a5ab8; /* violeta medio oscuro */
-  color: #fff;
-}
-
-.categories label:hover {
-  background-color: #d0d0f0;
-}
-
-.categories input[type="radio"] {
-  display: none; /* ocultamos radio real */
 }
 
 /* Botones centrados y separados */
@@ -100,6 +66,7 @@
   border-radius: 8px;
   border: 1px solid #ddd;
 }
+
 .existing-categories {
   margin-top: 20px;
 }
@@ -131,4 +98,308 @@
   margin: 0;
   font-size: 14px;
   color: #555;
+}
+
+/* ===== CHECKBOXES DE CATEGORÍAS MEJORADOS ===== */
+
+/* Contenedor principal de categorías */
+.categories-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 25px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f1f5f9 100%);
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.categories-container h3 {
+  color: #9CA1D7;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.categories-container h3::before {
+  content: "🏷️";
+  font-size: 22px;
+}
+
+/* Grid de categorías */
+.categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Labels de categoría con diseño moderno */
+.categories label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  overflow: hidden;
+  font-weight: 500;
+  font-size: 14px;
+  color: #475569;
+}
+
+/* Efecto de hover */
+.categories label:hover {
+  border-color: #9CA1D7;
+  background: #fafbff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(156, 161, 215, 0.15);
+}
+
+/* Estado seleccionado */
+.categories label.selected {
+  background: linear-gradient(135deg, #9CA1D7 0%, #b8bef0 100%);
+  border-color: #9CA1D7;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px rgba(156, 161, 215, 0.3);
+}
+
+.categories label.selected:hover {
+  background: linear-gradient(135deg, #8b93d1 0%, #a8aee8 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(156, 161, 215, 0.4);
+}
+
+/* Ocultar checkbox real pero mantener funcionalidad */
+.categories input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Checkbox personalizado */
+.categories label::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 6px;
+  margin-right: 12px;
+  transition: all 0.3s ease;
+  background: white;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Hover en checkbox */
+.categories label:hover::before {
+  border-color: #9CA1D7;
+  background: #f8f9ff;
+}
+
+/* Checkbox seleccionado */
+.categories label.selected::before {
+  background: white;
+  border-color: white;
+  transform: scale(1.1);
+}
+
+/* Checkmark */
+.categories label.selected::after {
+  content: '✓';
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9CA1D7;
+  font-weight: bold;
+  font-size: 14px;
+  animation: checkmarkPop 0.3s ease;
+  z-index: 2;
+}
+
+/* Animación del checkmark */
+@keyframes checkmarkPop {
+  0% {
+    transform: translateY(-50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-50%) scale(1.2);
+  }
+  100% {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Texto de la categoría */
+.categories label span {
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+/* ===== SECCIÓN DE CATEGORÍAS SELECCIONADAS ===== */
+
+/* Contenedor de categorías seleccionadas */
+.selected-categories {
+  margin-top: 25px;
+  padding: 20px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.selected-categories h4 {
+  margin: 0 0 15px 0;
+  color: #166534;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selected-categories h4::before {
+  content: "✅";
+  font-size: 18px;
+}
+
+/* Tags de categorías seleccionadas */
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+/* Botón para remover tag */
+.remove-tag {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.remove-tag:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Mensaje cuando no hay categorías seleccionadas */
+.no-categories-selected {
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .form-container {
+    margin: 20px auto;
+    padding: 25px;
+    max-width: 90%;
+  }
+
+  .categories {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .categories label {
+    padding: 14px 18px;
+    font-size: 13px;
+  }
+  
+  .categories label::before {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+  }
+  
+  .categories label.selected::after {
+    left: 22px;
+    font-size: 12px;
+  }
+  
+  .selected-categories {
+    padding: 15px;
+  }
+  
+  .category-tag {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    margin: 15px auto;
+    padding: 20px;
+  }
+
+  .categories-container {
+    padding: 15px;
+    margin: 20px 0;
+  }
+  
+  .categories-container h3 {
+    font-size: 16px;
+  }
+  
+  .categories label {
+    padding: 12px 16px;
+  }
+  
+  .selected-categories h4 {
+    font-size: 14px;
+  }
 }
