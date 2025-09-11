@@ -10,7 +10,7 @@ const Footer = () => {
         {/* Columna izquierda */}
         <div className="footer-left">
           <a
-            href="https://www.instagram.com/tu_instagram"
+            href="https://www.instagram.com/https://www.instagram.com/lasplantasdelorenzo/"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-social"
@@ -22,7 +22,7 @@ const Footer = () => {
 
         {/* Columna derecha */}
         <div className="footer-right">
-          <p>🌱 Las plantas de lorenzo - Todos los derechos reservados © {new Date().getFullYear()}</p>
+          <p>🌱 Las plantas de Lorenzo - Todos los derechos reservados © {new Date().getFullYear()}</p>
         </div>
 
       </div>

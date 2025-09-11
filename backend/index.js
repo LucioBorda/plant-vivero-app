@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors"); // ← Agregar esta línea
 const sequelize = require("./db");
 
 // Importar modelos
@@ -17,12 +18,18 @@ const categoryRoutes = require("./routes/categories");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Configurar CORS ANTES de otros middlewares
+app.use(cors({
+  origin: "http://localhost:3000", // Permitir requests desde React
+  credentials: true
+}));
+
 // Middleware para JSON
 app.use(express.json());
 
-// Rutas
-app.use("/plants", plantRoutes);
-app.use("/categories", categoryRoutes);
+// Rutas - Agregar /api/ como prefijo
+app.use("/api/plants", plantRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Ruta de prueba
 app.get("/", (req, res) => {

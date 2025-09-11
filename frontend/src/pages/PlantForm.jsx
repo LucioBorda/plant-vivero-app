@@ -29,40 +29,58 @@ function PlantForm() {
     setFormData({ ...formData, [name]: value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (Number(formData.price) <= 0) {
-    alert("El precio debe ser mayor a 0");
-    return;
-  }
-
-  try {
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("price", formData.price);
-    data.append("stock", formData.stock);
-    data.append("description", formData.description);
-    if (imageFile) data.append("image", imageFile);
-    data.append("categoryIds", JSON.stringify(formData.categoryIds));
-
-    await createPlant(data);
-
-    setFormData({
-      name: "",
-      price: "",
-      stock: "",
-      description: "",
-      categoryIds: []
+  const handleCategoryToggle = (catId) => {
+    const id = Number(catId);
+    setFormData(prev => {
+      if (prev.categoryIds.includes(id)) {
+        return {
+          ...prev,
+          categoryIds: prev.categoryIds.filter(x => x !== id)
+        };
+      } else {
+        return {
+          ...prev,
+          categoryIds: [...prev.categoryIds, id]
+        };
+      }
     });
-    setImageFile(null);
-    alert("Planta creada con éxito!");
-  } catch (error) {
-    console.error(error);
-    alert("Error al crear la planta");
-  }
-};
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (Number(formData.price) <= 0) {
+      alert("El precio debe ser mayor a 0");
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("price", formData.price);
+      data.append("stock", formData.stock);
+      data.append("description", formData.description);
+      if (imageFile) data.append("image", imageFile);
+
+      // Enviar cada categoría individualmente
+      formData.categoryIds.forEach(id => data.append("categoryIds[]", id));
+
+      await createPlant(data);
+
+      setFormData({
+        name: "",
+        price: "",
+        stock: "",
+        description: "",
+        categoryIds: []
+      });
+      setImageFile(null);
+      alert("Planta creada con éxito!");
+    } catch (error) {
+      console.error(error);
+      alert("Error al crear la planta");
+    }
+  };
 
   return (
     <div className="form-container">
@@ -76,26 +94,25 @@ const handleSubmit = async (e) => {
           onChange={handleChange}
           required
         />
-<input
-  type="number"
-  name="price"
-  placeholder="Precio"
-  value={formData.price}
-  onChange={handleChange}
-  min="0.01" // evita valores negativos o cero
-  step="0.01"
-  required
-/>
-<input
-  type="number"
-  name="stock"
-  placeholder="Stock"
-  value={formData.stock}
-  onChange={handleChange}
-  step="1"
-  required
-/>
-
+        <input
+          type="number"
+          name="price"
+          placeholder="Precio"
+          value={formData.price}
+          onChange={handleChange}
+          min="0.01"
+          step="0.01"
+          required
+        />
+        <input
+          type="number"
+          name="stock"
+          placeholder="Stock"
+          value={formData.stock}
+          onChange={handleChange}
+          step="1"
+          required
+        />
         <textarea
           name="description"
           placeholder="Descripción"
@@ -107,17 +124,16 @@ const handleSubmit = async (e) => {
         <div className="categories-container">
           <div className="categories">
             {categories.map((cat) => {
-              const selected = formData.categoryIds[0] === cat.id;
+              const selected = formData.categoryIds.includes(cat.id);
               return (
                 <label
                   key={cat.id}
                   className={selected ? "selected" : ""}
-                  onClick={() => setFormData({ ...formData, categoryIds: [cat.id] })}
+                  onClick={() => handleCategoryToggle(cat.id)}
                 >
                   {cat.name}
                   <input
-                    type="radio"
-                    name="category"
+                    type="checkbox"
                     value={cat.id}
                     checked={selected}
                     readOnly
@@ -146,10 +162,7 @@ const handleSubmit = async (e) => {
         {/* Previsualización de la imagen */}
         {imageFile && (
           <div className="image-preview">
-            <img
-              src={URL.createObjectURL(imageFile)}
-              alt="preview"
-            />
+            <img src={URL.createObjectURL(imageFile)} alt="preview" />
           </div>
         )}
       </form>

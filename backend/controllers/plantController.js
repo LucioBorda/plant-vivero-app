@@ -6,9 +6,9 @@ module.exports = {
   createPlant: async (req, res) => {
     try {
       const { name, price, stock, description, categoryIds } = req.body;
-      const image = req.file?.path; // Multer + Cloudinary devuelve la URL
-
-      // Crear la planta
+      // Usamos imagen subida o placeholder por defecto
+     const image = req.file?.path || "https://res.cloudinary.com/dnq7qxwca/image/upload/v1756335309/brotedeafult_s4kavu.webp";
+     
       const plant = await Plant.create({ name, price, stock, description, image });
 
       // Asociar categorías si se envían
@@ -69,7 +69,7 @@ module.exports = {
       const plant = await Plant.findByPk(id);
       if (!plant) return res.status(404).json({ error: "Planta no encontrada" });
 
-      // Actualizar campos
+      // Actualizar campos (solo actualizar imagen si hay nueva)
       await plant.update({ name, price, stock, description, ...(image && { image }) });
 
       // Actualizar categorías

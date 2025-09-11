@@ -1,26 +1,187 @@
-.plants-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
-  padding: 20px;
+/* Contenedor principal con sidebar */
+.plant-list-container {
+  display: flex;
+  gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  padding: 20px;
 }
 
-/* Responsive para tablets */
-@media (max-width: 768px) {
+/* Sidebar de filtros */
+.filters-sidebar {
+  flex-shrink: 0;
+  width: 250px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.filters-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.filters-header h3 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Opciones de filtro */
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.filter-option:hover {
+  background-color: #f7f8ff;
+}
+
+.filter-option input[type="radio"] {
+  margin-right: 12px;
+  cursor: pointer;
+  accent-color: #9CA1D7;
+}
+
+.filter-label {
+  font-size: 14px;
+  color: #4a5568;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.filter-option input[type="radio"]:checked + .filter-label {
+  color: #9CA1D7;
+  font-weight: 600;
+}
+
+/* Contenido principal */
+.plants-main-content {
+  flex: 1;
+  min-width: 0; /* Permite que el grid se contraiga correctamente */
+}
+
+.plants-header {
+  margin-bottom: 24px;
+}
+
+.plants-header h2 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* Grid de plantas - 4 columnas */
+.plants-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+/* Estados de carga y vacío */
+.loading-container,
+.no-plants {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  color: #666;
+  font-size: 16px;
+}
+
+.no-plants {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+}
+
+/* ========== RESPONSIVE ========== */
+
+/* Tablets grandes */
+@media (max-width: 1200px) {
   .plants-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.2rem;
-    padding: 15px;
   }
 }
 
-/* Responsive para móviles */
-@media (max-width: 480px) {
+/* Tablets */
+@media (max-width: 900px) {
+  .plant-list-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .filters-sidebar {
+    width: 100%;
+    position: static;
+    order: -1; /* Poner filtros arriba en móvil */
+  }
+
+  .filter-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+  }
+
   .plants-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    padding: 10px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 600px) {
+  .plant-list-container {
+    padding: 15px;
+    gap: 1rem;
+  }
+
+  .filters-sidebar {
+    padding: 15px;
+  }
+
+  .filters-header h3 {
+    font-size: 16px;
+  }
+
+  .plants-header h2 {
+    font-size: 20px;
+  }
+
+  .plants-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 400px) {
+  .plants-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-options {
+    grid-template-columns: 1fr;
   }
 }
