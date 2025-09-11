@@ -1,38 +1,134 @@
 .form-container {
-  background-color: white;
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 400px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #fff;
+  padding: 30px;
+  margin: 30px auto;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-form input,
-form textarea,
-form select {
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #9CA1D7; /* Color principal */
+}
+
+.form-container input,
+.form-container textarea {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  box-sizing: border-box; /* ← Agregar esta línea */
+  box-sizing: border-box;
+  font-size: 16px;
 }
 
-form textarea {
+.form-container textarea {
   resize: none;
 }
 
-form button {
-  background-color: #9CA1D7;
+/* Contenedor de categorías centrado */
+.categories-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px; /* separación del resto del formulario */
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.categories label {
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background-color: #f4f4f4;
+  transition: 0.2s;
+  user-select: none;
+}
+
+.categories label.selected {
+  background-color: #6a5ab8; /* violeta medio oscuro */
+  color: #fff;
+}
+
+.categories label:hover {
+  background-color: #d0d0f0;
+}
+
+.categories input[type="radio"] {
+  display: none; /* ocultamos radio real */
+}
+
+/* Botones centrados y separados */
+.form-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Botones */
+.btn {
+  background-color: #9CA1D7; /* Color principal */
   color: white;
-  padding: 10px;
+  padding: 12px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   width: 100%;
-  box-sizing: border-box; /* ← También para el botón */
+  font-size: 16px;
+  transition: background 0.2s;
 }
 
-form button:hover {
-  background-color: #7f84c4;
+.btn:hover {
+  background-color: #7b86c1; /* color más oscuro al hover */
+}
+
+/* Previsualización de la imagen */
+.image-preview {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.image-preview img {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.existing-categories {
+  margin-top: 20px;
+}
+
+.categories-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center; /* centra los boxes */
+}
+
+.category-box {
+  background-color: #f4f4f4;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  text-align: center;
+  min-width: 120px;
+  max-width: 200px;
+}
+
+.category-box strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #9CA1D7;
+}
+
+.category-box p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
 }

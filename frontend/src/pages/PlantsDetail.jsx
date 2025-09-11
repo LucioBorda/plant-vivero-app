@@ -1,7 +1,9 @@
+// src/pages/PlantDetail.jsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPlantById, updatePlant } from "../api/plantsApi";
 import "../styles/Form.css";
+import ImageUploaderModal from "../components/ImageUploaderModal";
 
 const PlantDetail = () => {
   const { id } = useParams();
@@ -15,6 +17,7 @@ const PlantDetail = () => {
     description: "",
   });
   const [imageFile, setImageFile] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchPlant = async () => {
@@ -36,11 +39,11 @@ const PlantDetail = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
-  const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+    // Validación: precio > 0
+    if (name === "price" && Number(value) < 0) return;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -66,8 +69,19 @@ const PlantDetail = () => {
 
   return (
     <div className="form-container">
-      <h2>Editar Planta: {plant.name}</h2>
-      <img src={plant.image || "https://via.placeholder.com/150"} alt={plant.name} width="200" />
+      <h2 style={{ color: "#9CA1D7", textAlign: "center", marginBottom: "20px" }}>
+        Editar Planta: {plant.name}
+      </h2>
+
+      {/* Imagen actual */}
+      <div className="image-preview">
+        <img
+          src={imageFile ? URL.createObjectURL(imageFile) : plant.image || "https://via.placeholder.com/150"}
+          alt={plant.name}
+          style={{ maxWidth: "250px", borderRadius: "8px", border: "1px solid #ddd" }}
+        />
+      </div>
+
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -83,6 +97,7 @@ const PlantDetail = () => {
           value={formData.price}
           onChange={handleChange}
           placeholder="Precio"
+          min="0"
           required
         />
         <input
@@ -91,7 +106,6 @@ const PlantDetail = () => {
           value={formData.stock}
           onChange={handleChange}
           placeholder="Stock"
-          required
         />
         <textarea
           name="description"
@@ -99,9 +113,26 @@ const PlantDetail = () => {
           onChange={handleChange}
           placeholder="Descripción"
         />
-        <input type="file" onChange={handleImageChange} />
-        <button type="submit">Guardar cambios</button>
+
+        {/* Botón para abrir modal de imagen */}
+        <div style={{ margin: "15px 0" }}>
+          <button type="button" className="btn" onClick={() => setShowModal(true)}>
+            {imageFile ? "Cambiar Imagen" : "Agregar Imagen"}
+          </button>
+        </div>
+
+        <button type="submit" className="btn">
+          Guardar Cambios
+        </button>
       </form>
+
+      {/* Modal para subir/recortar imagen */}
+      {showModal && (
+        <ImageUploaderModal
+          onClose={() => setShowModal(false)}
+          onImageChange={(file) => setImageFile(file)}
+        />
+      )}
     </div>
   );
 };

@@ -1,0 +1,54 @@
+.footer {
+  background-color: #9CA1D7;
+  color: white;
+  padding: 20px;
+  border-radius: 12px 12px 0 0;
+  margin-top: auto; /* ← ESTO es lo que empuja el footer hacia abajo */
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.footer-left p {
+  margin: 0;
+}
+
+.footer-social {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.footer-social:hover {
+  color: #f0f0f0;
+}
+
+.footer-right {
+  font-size: 14px;
+  text-align: right;
+}
+
+/* Responsive para el footer */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .footer-right {
+    text-align: center;
+  }
+}

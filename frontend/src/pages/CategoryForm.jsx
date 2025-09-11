@@ -1,5 +1,5 @@
 // src/pages/CategoryForm.jsx
-import { useState, useEffect } from "react"; // ← Agregar useEffect
+import { useState, useEffect } from "react";
 import { createCategory, getAllCategories } from "../api/categoriesApi";
 import "../styles/Form.css";
 
@@ -11,19 +11,18 @@ function CategoryForm() {
 
   const [categories, setCategories] = useState([]);
 
-  // Cargar categorías existentes cuando el componente se monta
+  // Cargar categorías existentes
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getAllCategories();
-        setCategories(data);
+        setCategories(data || []);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
-
     fetchCategories();
-  }, []); // ← Array vacío para que solo se ejecute una vez
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,9 +32,9 @@ function CategoryForm() {
     e.preventDefault();
     try {
       const newCategory = await createCategory(formData);
-      setCategories([...categories, newCategory]); // Agregar la nueva a la lista
-      setFormData({ name: "", description: "" }); // Limpiar el formulario
-      alert("Categoría creada correctamente!"); // Feedback al usuario
+      setCategories([...categories, newCategory]);
+      setFormData({ name: "", description: "" });
+      alert("Categoría creada correctamente!");
     } catch (error) {
       console.error("Error creating category:", error);
       alert("Error al crear la categoría");
@@ -44,7 +43,7 @@ function CategoryForm() {
 
   return (
     <div className="form-container">
-      <h2>Agregar Categoría</h2>
+      <h2 style={{ color: "#9CA1D7" }}>Agregar Categoría</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -59,24 +58,28 @@ function CategoryForm() {
           placeholder="Descripción"
           value={formData.description}
           onChange={handleChange}
-          required
         />
-        <button type="submit">Agregar</button>
+        <button type="submit" className="btn">Agregar Categoría</button>
       </form>
 
-      <h3>Categorías existentes ({categories.length})</h3>
-      {categories.length === 0 ? (
-        <p>No hay categorías creadas aún.</p>
-      ) : (
-        <ul>
-          {categories.map((cat) => (
-            <li key={cat.id}>
-              <strong>{cat.name}</strong>
-              {cat.description && <span> - {cat.description}</span>}
-            </li>
-          ))}
-        </ul>
-      )}
+      <h3 style={{ marginTop: "30px", textAlign: "center" }}>
+        Categorías existentes ({categories.length})
+      </h3>
+
+      <div className="existing-categories">
+        {categories.length === 0 ? (
+          <p style={{ textAlign: "center" }}>No hay categorías creadas aún.</p>
+        ) : (
+          <div className="categories-list">
+            {categories.map((cat) => (
+              <div key={cat.id} className="category-box">
+                <strong>{cat.name}</strong>
+                {cat.description && <p>{cat.description}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

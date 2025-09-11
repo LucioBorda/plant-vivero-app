@@ -1,0 +1,87 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ccc;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.dropzone {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.crop-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.crop-top-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.9);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.crop-top-panel input[type="range"] {
+  width: 60%;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.crop-bottom-panel {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: #fff; /* fondo blanco */
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.btn {
+  background-color: #9CA1D7; /* color genérico, luego se reemplaza por header */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background-color: #9CA1D7;
+}

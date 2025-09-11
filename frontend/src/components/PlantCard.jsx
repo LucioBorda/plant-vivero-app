@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./PlantCard.css"; // Estilos específicos para la card
+import "./PlantCard.css";
 
 const PlantCard = ({ plant, onEdit, onDelete }) => {
   const [imageError, setImageError] = useState(false);
@@ -46,37 +46,44 @@ const PlantCard = ({ plant, onEdit, onDelete }) => {
 
   return (
     <div className="plant-card" onClick={handleClickOutside}>
-      {/* Botón de menú (tres puntitos) */}
-      <div className="plant-card-menu">
-        <button 
-          className="menu-button" 
-          onClick={toggleMenu}
-          aria-label="Opciones"
-        >
-          ⋮
-        </button>
-        
-        {/* Menú desplegable */}
-        {showMenu && (
-          <div className="dropdown-menu">
-            <button className="menu-item" onClick={handleEdit}>
-              ✏️ Editar
-            </button>
-            <button className="menu-item delete" onClick={handleDelete}>
-              🗑️ Eliminar
-            </button>
-          </div>
-        )}
+      {/* Contenedor de imagen con proporción fija */}
+      <div className="plant-image-container">
+        {/* Botón de menú (tres puntitos) */}
+        <div className="plant-card-menu">
+          <button 
+            className="menu-button" 
+            onClick={toggleMenu}
+            aria-label="Opciones"
+          >
+            ⋮
+          </button>
+          
+          {/* Menú desplegable */}
+          {showMenu && (
+            <div className="dropdown-menu">
+              <button className="menu-item" onClick={handleEdit}>
+                Editar
+              </button>
+              <button className="menu-item delete" onClick={handleDelete}>
+                Eliminar
+              </button>
+            </div>
+          )}
+        </div>
+
+        <img 
+          src={getImageSrc()} 
+          alt={plant.name} 
+          className="plant-image"
+          onError={handleImageError}
+        />
       </div>
 
-      <img 
-        src={getImageSrc()} 
-        alt={plant.name} 
-        className="plant-image"
-        onError={handleImageError}
-      />
-      <h3 className="plant-name">{plant.name}</h3>
-      {plant.price && <p className="plant-price">${plant.price}</p>}
+      {/* Contenido de la tarjeta */}
+      <div className="plant-card-content">
+        <h3 className="plant-name">{plant.name}</h3>
+        {plant.price && <p className="plant-price">${plant.price}</p>}
+      </div>
     </div>
   );
 };

@@ -1,3 +1,17 @@
+/* Contenedor principal - SUPER IMPORTANTE */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* El contenido principal debe crecer */
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Mantén estos estilos que ya tenías si los necesitas */
 .App {
   text-align: center;
 }
