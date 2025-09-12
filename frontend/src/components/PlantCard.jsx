@@ -6,8 +6,9 @@ const PlantCard = ({ plant, onEdit, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   // Imagen por defecto de Cloudinary
-  const defaultImage = "https://res.cloudinary.com/dnq7qxwca/image/upload/v1756335309/brotedeafult_s4kavu.webp";
-  
+  const defaultImage =
+    "https://res.cloudinary.com/dnq7qxwca/image/upload/v1756335309/brotedeafult_s4kavu.webp";
+
   const handleImageError = () => {
     setImageError(true);
   };
@@ -27,9 +28,9 @@ const PlantCard = ({ plant, onEdit, onDelete }) => {
 
   const handleDelete = () => {
     setShowMenu(false);
-    if (window.confirm(`¿Estás seguro de que quieres eliminar "${plant.name}"?`)) {
-      onDelete(plant.id);
-    }
+    // ❌ Antes: window.confirm(...)
+    // ✅ Ahora: dejamos que PlantList maneje SweetAlert2
+    onDelete(plant);
   };
 
   const toggleMenu = (e) => {
@@ -50,14 +51,14 @@ const PlantCard = ({ plant, onEdit, onDelete }) => {
       <div className="plant-image-container">
         {/* Botón de menú (tres puntitos) */}
         <div className="plant-card-menu">
-          <button 
-            className="menu-button" 
+          <button
+            className="menu-button"
             onClick={toggleMenu}
             aria-label="Opciones"
           >
             ⋮
           </button>
-          
+
           {/* Menú desplegable */}
           {showMenu && (
             <div className="dropdown-menu">
@@ -71,9 +72,9 @@ const PlantCard = ({ plant, onEdit, onDelete }) => {
           )}
         </div>
 
-        <img 
-          src={getImageSrc()} 
-          alt={plant.name} 
+        <img
+          src={getImageSrc()}
+          alt={plant.name}
           className="plant-image"
           onError={handleImageError}
         />

@@ -4,12 +4,12 @@ import PlantCard from "../components/PlantCard";
 import { getAllPlants, deletePlant } from "../api/plantsApi";
 import { getAllCategories } from "../api/categoriesApi";
 import {
+  confirmAlert,
   successAlert,
   errorAlert,
-  confirmAlert,
   loadingAlert,
   closeAlert,
-} from "../utils/sweetAlertConfig";
+} from "../utils/sweetAlertConfig"; // importamos las alertas
 import "./PlantList.css";
 
 const PlantList = () => {
@@ -35,7 +35,6 @@ const PlantList = () => {
         setFilteredPlants(plantsData);
       } catch (error) {
         console.error("Error fetching data:", error);
-        errorAlert("Error", "No se pudieron cargar los datos.");
       } finally {
         setLoading(false);
       }
@@ -44,7 +43,7 @@ const PlantList = () => {
     fetchData();
   }, []);
 
-  // Filtrado
+  // Filtrar plantas por categoría y búsqueda
   useEffect(() => {
     let filtered = plants;
 
@@ -61,19 +60,27 @@ const PlantList = () => {
     if (searchTerm.trim() !== "") {
       const searchTermLower = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((plant) => {
-        const matchesName = plant.name?.toLowerCase().includes(searchTermLower);
+        const matchesName = plant.name
+          ?.toLowerCase()
+          .includes(searchTermLower);
+
         const matchesDescription = plant.description
           ?.toLowerCase()
           .includes(searchTermLower);
+
         const matchesCategory = plant.Categories?.some((category) =>
           category.name?.toLowerCase().includes(searchTermLower)
         );
+
         const matchesPrice = plant.price
           ?.toString()
-          .includes(searchTermLower);
+          .includes(searchTerm);
 
         return (
-          matchesName || matchesDescription || matchesCategory || matchesPrice
+          matchesName ||
+          matchesDescription ||
+          matchesCategory ||
+          matchesPrice
         );
       });
     }
@@ -85,25 +92,27 @@ const PlantList = () => {
     navigate(`/plants/${plant.id}`);
   };
 
-  const handleDelete = async (plantId) => {
+  const handleDelete = async (plantId, plantName) => {
     try {
       const result = await confirmAlert(
-        "¿Eliminar planta?",
-        "Esta acción no se puede deshacer"
+        "¿Estás seguro?",
+        `¿Deseas eliminar "${plantName}"?`
       );
 
       if (result.isConfirmed) {
-        loadingAlert("Eliminando planta...", "Por favor espera");
+        loadingAlert("Eliminando planta...");
         await deletePlant(plantId);
+
         const updatedPlants = plants.filter((plant) => plant.id !== plantId);
         setPlants(updatedPlants);
+
         closeAlert();
-        successAlert("Eliminada", "La planta fue eliminada correctamente");
+        successAlert("Planta eliminada", `"${plantName}" se eliminó correctamente`);
       }
     } catch (error) {
       console.error("Error deleting plant:", error);
       closeAlert();
-      errorAlert("Error", "No se pudo eliminar la planta. Intenta nuevamente.");
+      errorAlert("Error", "No se pudo eliminar la planta. Verifica tu conexión.");
     }
   };
 
@@ -169,9 +178,9 @@ const PlantList = () => {
           )}
         </div>
 
+        {/* Categorías */}
         <div className="filter-options">
           <h4>Categorías</h4>
-          {/* Opción "Todas" */}
           <label className="filter-option">
             <input
               type="radio"
@@ -183,7 +192,6 @@ const PlantList = () => {
             <span className="filter-label">Todas ({plants.length})</span>
           </label>
 
-          {/* Categorías dinámicas */}
           {categories.map((category) => {
             let categoryCount;
             if (searchTerm.trim() === "") {
@@ -218,7 +226,9 @@ const PlantList = () => {
                   name="category"
                   value={category.id.toString()}
                   checked={selectedCategory === category.id.toString()}
-                  onChange={() => handleCategoryChange(category.id.toString())}
+                  onChange={() =>
+                    handleCategoryChange(category.id.toString())
+                  }
                 />
                 <span className="filter-label">
                   {category.name} ({categoryCount})
@@ -283,7 +293,10 @@ const PlantList = () => {
                   <br />• Descripción
                   <br />• Precio
                 </p>
-                <button onClick={clearAllFilters} className="reset-search-btn">
+                <button
+                  onClick={clearAllFilters}
+                  className="reset-search-btn"
+                >
                   Ver todas las plantas
                 </button>
               </>
@@ -298,7 +311,7 @@ const PlantList = () => {
                 key={plant.id}
                 plant={plant}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                onDelete={() => handleDelete(plant.id, plant.name)} // 👈 ahora pasa id y nombre
                 searchTerm={searchTerm}
               />
             ))}
