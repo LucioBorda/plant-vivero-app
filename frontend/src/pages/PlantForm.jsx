@@ -3,6 +3,14 @@ import { getAllCategories } from "../api/categoriesApi";
 import { createPlant } from "../api/plantsApi";
 import "../styles/Form.css";
 import ImageUploaderModal from "../components/ImageUploaderModal";
+import { 
+  successAlert, 
+  errorAlert, 
+  warningAlert, 
+  confirmAlert, 
+  loadingAlert, 
+  closeAlert 
+} from '../utils/sweetAlertConfig';
 
 function PlantForm() {
   const [categories, setCategories] = useState([]);
@@ -30,7 +38,6 @@ function PlantForm() {
   };
 
   const handleCategoryToggle = (catId, e) => {
-    // Prevenir la propagación del evento para evitar conflictos
     if (e) {
       e.stopPropagation();
     }
@@ -51,25 +58,44 @@ function PlantForm() {
     });
   };
 
-  const removeCategory = (catId) => {
-    setFormData(prev => ({
-      ...prev,
-      categoryIds: prev.categoryIds.filter(x => x !== catId)
-    }));
+  const removeCategory = async (catId) => {
+    const category = categories.find(c => c.id === catId);
+    const result = await confirmAlert(
+      '¿Estás seguro?',
+      `Removerás la categoría "${category?.name}"`
+    );
+
+    if (result.isConfirmed) {
+      setFormData(prev => ({
+        ...prev,
+        categoryIds: prev.categoryIds.filter(x => x !== catId)
+      }));
+      
+      successAlert('Removida', 'Categoría removida correctamente');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (Number(formData.price) <= 0) {
-      alert("El precio debe ser mayor a 0");
+      errorAlert(
+        'Error en el precio',
+        'El precio debe ser mayor a 0'
+      );
       return;
     }
 
     if (formData.categoryIds.length === 0) {
-      alert("Debes seleccionar al menos una categoría");
+      warningAlert(
+        'Categorías requeridas',
+        'Debes seleccionar al menos una categoría'
+      );
       return;
     }
+
+    // Mostrar loading
+    loadingAlert('Creando planta...', 'Por favor espera un momento');
 
     try {
       const data = new FormData();
@@ -92,10 +118,22 @@ function PlantForm() {
         categoryIds: []
       });
       setImageFile(null);
-      alert("Planta creada con éxito!");
+      
+      // Cerrar loading y mostrar éxito
+      closeAlert();
+      successAlert(
+        '¡Planta creada!',
+        'La planta se ha creado exitosamente'
+      );
     } catch (error) {
       console.error(error);
-      alert("Error al crear la planta");
+      
+      // Cerrar loading y mostrar error
+      closeAlert();
+      errorAlert(
+        'Error al crear la planta',
+        error.response?.data?.message || 'Ocurrió un error inesperado. Intenta nuevamente.'
+      );
     }
   };
 

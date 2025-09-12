@@ -3,6 +3,13 @@ import { useNavigate } from "react-router-dom";
 import PlantCard from "../components/PlantCard";
 import { getAllPlants, deletePlant } from "../api/plantsApi";
 import { getAllCategories } from "../api/categoriesApi";
+import {
+  successAlert,
+  errorAlert,
+  confirmAlert,
+  loadingAlert,
+  closeAlert,
+} from "../utils/sweetAlertConfig";
 import "./PlantList.css";
 
 const PlantList = () => {
@@ -10,7 +17,7 @@ const PlantList = () => {
   const [categories, setCategories] = useState([]);
   const [filteredPlants, setFilteredPlants] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [searchTerm, setSearchTerm] = useState(""); // Nuevo estado para búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -20,14 +27,15 @@ const PlantList = () => {
         setLoading(true);
         const [plantsData, categoriesData] = await Promise.all([
           getAllPlants(),
-          getAllCategories()
+          getAllCategories(),
         ]);
-        
+
         setPlants(plantsData);
         setCategories(categoriesData);
         setFilteredPlants(plantsData);
       } catch (error) {
         console.error("Error fetching data:", error);
+        errorAlert("Error", "No se pudieron cargar los datos.");
       } finally {
         setLoading(false);
       }
@@ -36,38 +44,37 @@ const PlantList = () => {
     fetchData();
   }, []);
 
-  // Filtrar plantas cuando cambia la categoría seleccionada O el término de búsqueda
+  // Filtrado
   useEffect(() => {
     let filtered = plants;
 
-    // Primero aplicar filtro de categoría
     if (selectedCategory !== "all") {
-      filtered = filtered.filter(plant => 
-        plant.Categories && plant.Categories.some(category => 
-          category.id === parseInt(selectedCategory)
-        )
+      filtered = filtered.filter(
+        (plant) =>
+          plant.Categories &&
+          plant.Categories.some(
+            (category) => category.id === parseInt(selectedCategory)
+          )
       );
     }
 
-    // Luego aplicar filtro de búsqueda
     if (searchTerm.trim() !== "") {
       const searchTermLower = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(plant => {
-        // Buscar en nombre
+      filtered = filtered.filter((plant) => {
         const matchesName = plant.name?.toLowerCase().includes(searchTermLower);
-        
-        // Buscar en descripción
-        const matchesDescription = plant.description?.toLowerCase().includes(searchTermLower);
-        
-        // Buscar en categorías
-        const matchesCategory = plant.Categories?.some(category => 
+        const matchesDescription = plant.description
+          ?.toLowerCase()
+          .includes(searchTermLower);
+        const matchesCategory = plant.Categories?.some((category) =>
           category.name?.toLowerCase().includes(searchTermLower)
         );
-        
-        // Buscar en precio (convertir a string)
-        const matchesPrice = plant.price?.toString().includes(searchTerm);
+        const matchesPrice = plant.price
+          ?.toString()
+          .includes(searchTermLower);
 
-        return matchesName || matchesDescription || matchesCategory || matchesPrice;
+        return (
+          matchesName || matchesDescription || matchesCategory || matchesPrice
+        );
       });
     }
 
@@ -80,13 +87,23 @@ const PlantList = () => {
 
   const handleDelete = async (plantId) => {
     try {
-      await deletePlant(plantId);
-      const updatedPlants = plants.filter((plant) => plant.id !== plantId);
-      setPlants(updatedPlants);
-      alert("Planta eliminada correctamente");
+      const result = await confirmAlert(
+        "¿Eliminar planta?",
+        "Esta acción no se puede deshacer"
+      );
+
+      if (result.isConfirmed) {
+        loadingAlert("Eliminando planta...", "Por favor espera");
+        await deletePlant(plantId);
+        const updatedPlants = plants.filter((plant) => plant.id !== plantId);
+        setPlants(updatedPlants);
+        closeAlert();
+        successAlert("Eliminada", "La planta fue eliminada correctamente");
+      }
     } catch (error) {
       console.error("Error deleting plant:", error);
-      alert("Error al eliminar la planta. Verifica tu conexión.");
+      closeAlert();
+      errorAlert("Error", "No se pudo eliminar la planta. Intenta nuevamente.");
     }
   };
 
@@ -151,7 +168,7 @@ const PlantList = () => {
             </p>
           )}
         </div>
-        
+
         <div className="filter-options">
           <h4>Categorías</h4>
           {/* Opción "Todas" */}
@@ -163,31 +180,37 @@ const PlantList = () => {
               checked={selectedCategory === "all"}
               onChange={() => handleCategoryChange("all")}
             />
-            <span className="filter-label">
-              Todas ({plants.length})
-            </span>
+            <span className="filter-label">Todas ({plants.length})</span>
           </label>
 
           {/* Categorías dinámicas */}
           {categories.map((category) => {
-            // Contar plantas que coinciden con filtro de búsqueda Y categoría
             let categoryCount;
             if (searchTerm.trim() === "") {
-              categoryCount = plants.filter(plant => 
-                plant.Categories && plant.Categories.some(cat => cat.id === category.id)
+              categoryCount = plants.filter(
+                (plant) =>
+                  plant.Categories &&
+                  plant.Categories.some((cat) => cat.id === category.id)
               ).length;
             } else {
               const searchTermLower = searchTerm.toLowerCase().trim();
-              categoryCount = plants.filter(plant => {
-                const hasCategory = plant.Categories && plant.Categories.some(cat => cat.id === category.id);
-                const matchesSearch = plant.name?.toLowerCase().includes(searchTermLower) ||
-                                    plant.description?.toLowerCase().includes(searchTermLower) ||
-                                    plant.Categories?.some(cat => cat.name?.toLowerCase().includes(searchTermLower)) ||
-                                    plant.price?.toString().includes(searchTerm);
+              categoryCount = plants.filter((plant) => {
+                const hasCategory =
+                  plant.Categories &&
+                  plant.Categories.some((cat) => cat.id === category.id);
+                const matchesSearch =
+                  plant.name?.toLowerCase().includes(searchTermLower) ||
+                  plant.description
+                    ?.toLowerCase()
+                    .includes(searchTermLower) ||
+                  plant.Categories?.some((cat) =>
+                    cat.name?.toLowerCase().includes(searchTermLower)
+                  ) ||
+                  plant.price?.toString().includes(searchTerm);
                 return hasCategory && matchesSearch;
               }).length;
             }
-            
+
             return (
               <label key={category.id} className="filter-option">
                 <input
@@ -210,21 +233,32 @@ const PlantList = () => {
       <main className="plants-main-content">
         <div className="plants-header">
           <h2>
-            {searchTerm && selectedCategory === "all" 
+            {searchTerm && selectedCategory === "all"
               ? `Resultados de búsqueda (${filteredPlants.length})`
               : searchTerm && selectedCategory !== "all"
-              ? `Búsqueda en ${categories.find(cat => cat.id.toString() === selectedCategory)?.name} (${filteredPlants.length})`
-              : selectedCategory === "all" 
-              ? `Todas las plantas (${filteredPlants.length})` 
-              : `${categories.find(cat => cat.id.toString() === selectedCategory)?.name || 'Categoría'} (${filteredPlants.length})`
-            }
+              ? `Búsqueda en ${
+                  categories.find(
+                    (cat) => cat.id.toString() === selectedCategory
+                  )?.name
+                } (${filteredPlants.length})`
+              : selectedCategory === "all"
+              ? `Todas las plantas (${filteredPlants.length})`
+              : `${
+                  categories.find(
+                    (cat) => cat.id.toString() === selectedCategory
+                  )?.name || "Categoría"
+                } (${filteredPlants.length})`}
           </h2>
-          
-          {/* Indicadores de filtros activos */}
+
           <div className="active-filters-display">
             {selectedCategory !== "all" && (
               <span className="active-filter-tag">
-                📁 {categories.find(cat => cat.id.toString() === selectedCategory)?.name}
+                📁{" "}
+                {
+                  categories.find(
+                    (cat) => cat.id.toString() === selectedCategory
+                  )?.name
+                }
                 <button onClick={() => setSelectedCategory("all")}>×</button>
               </span>
             )}
@@ -265,7 +299,7 @@ const PlantList = () => {
                 plant={plant}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
-                searchTerm={searchTerm} // Pasar término de búsqueda para highlighting
+                searchTerm={searchTerm}
               />
             ))}
           </div>
