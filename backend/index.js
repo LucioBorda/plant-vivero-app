@@ -18,85 +18,55 @@ const categoryRoutes = require("./routes/categories");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// *** CORS CONFIGURADO PARA AZURE ***
+// *** CORS SIMPLIFICADO - Nginx maneja el proxy ***
 app.use(cors({
-  origin: [
-    "http://lasplantadelorenzo.brazilsouth.cloudapp.azure.com",
-    "https://lasplantadelorenzo.brazilsouth.cloudapp.azure.com",
-    "http://lasplantadelorenzo.brazilsouth.cloudapp.azure.com:80",
-    "http://20.206.162.62",
-    "http://20.206.162.62:80",
-    // Permitir también cualquier origen para desarrollo
-    "*"
-  ], 
+  origin: true, // Permite cualquier origen porque Nginx hace el proxy
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 
-// Para producción, permitir cualquier origen (más flexible)
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
-
 // Middleware para JSON
 app.use(express.json());
 
-// Middleware para logs de requests
+// Middleware para logs
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
-// Headers adicionales para CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
-
-// Rutas - Agregar /api/ como prefijo
+// Rutas
 app.use("/api/plants", plantRoutes);
 app.use("/api/categories", categoryRoutes);
 
 // Ruta de prueba
 app.get("/", (req, res) => {
-  res.send("🌱 Vivero API funcionando - Accesible desde Azure 🚀");
+  res.send("🌱 Vivero API funcionando con Nginx Proxy 🚀");
 });
 
-// Ruta de salud para verificar conectividad
 app.get("/api/health", (req, res) => {
   res.json({ 
     status: "OK", 
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    server: 'Azure Cloud App'
+    proxy: "Nginx",
+    server: "Azure + Docker"
   });
 });
 
-// Conexión a la base de datos y sincronización de modelos
+// Conexión a DB
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log("✅ Conectado a la base de datos PostgreSQL");
+    console.log("✅ Conectado a la base de datos");
     
     await sequelize.sync({ alter: true });
-    console.log("📦 Modelos sincronizados correctamente");
+    console.log("📦 Modelos sincronizados");
     
-    // Levantar servidor en todas las interfaces
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
-      console.log(`🌍 Accesible desde: http://lasplantadelorenzo.brazilsouth.cloudapp.azure.com:${PORT}`);
-      console.log(`🌐 Frontend disponible en: http://lasplantadelorenzo.brazilsouth.cloudapp.azure.com`);
+      console.log(`🚀 Backend corriendo en puerto ${PORT}`);
+      console.log(`🔄 Proxy reverso: Nginx maneja las requests`);
     });
   } catch (error) {
-    console.error("❌ Error al conectar a la base de datos:", error);
+    console.error("❌ Error:", error);
   }
 })();
