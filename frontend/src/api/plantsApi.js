@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:5000/api/plants"; // URL completa de la API
+import { API_BASE_URL } from '../config/api';
+
+const API_URL = `${API_BASE_URL}/api/plants`;
 
 // Crear planta (con FormData)
 export const createPlant = async (plantData) => {

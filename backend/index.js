@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors"); // ← Agregar esta línea
+const cors = require("cors");
 const sequelize = require("./db");
 
 // Importar modelos
@@ -18,9 +18,14 @@ const categoryRoutes = require("./routes/categories");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Configurar CORS ANTES de otros middlewares
+// *** CORS ACTUALIZADO ***
 app.use(cors({
-  origin: "http://localhost:3000", // Permitir requests desde React
+  origin: [
+    "http://localhost:3000", 
+    "http://20.206.162.62:3000",
+    "http://20.206.162.62",
+    "http://lasplantadelorenzo.brazilsouth.cloudapp.azure.com"
+  ], 
   credentials: true
 }));
 
